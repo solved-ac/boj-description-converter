@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Button, Space, TextField, Typo } from "@solved-ac/ui-react";
 import React, { useState } from "react";
+import "../boj-unify.scss";
 import { parse, transform } from "../utils/parse";
 import { exampleDescription } from "./example";
 
@@ -67,7 +68,7 @@ const Converter: React.FC = () => {
           renderMath: false,
         });
 
-        console.log(parsed)
+  console.log(parsed);
   return (
     <ConverterContainer>
       <ConverterSection>
@@ -92,7 +93,9 @@ const Converter: React.FC = () => {
             {html ? "미리보기로 전환" : "HTML로 전환"}
           </Button>
         </div>
-        <div style={{ flex: "1 0 0" }}>
+        <div
+          style={{ flex: "1 0 0", display: "flex", flexDirection: "column" }}
+        >
           {html ? (
             <TextField
               multiline
@@ -106,9 +109,19 @@ const Converter: React.FC = () => {
               value={transformed}
             />
           ) : (
-            <RenderedDescription
-              dangerouslySetInnerHTML={{ __html: transformed }}
-            />
+            <div
+              style={{
+                flex: "1 0 0",
+                width: "100%",
+                height: "100%",
+                overflowY: "auto",
+              }}
+            >
+              <RenderedDescription
+                className="preview"
+                dangerouslySetInnerHTML={{ __html: transformed }}
+              />
+            </div>
           )}
         </div>
       </ConverterSection>
