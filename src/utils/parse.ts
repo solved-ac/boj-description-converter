@@ -4,7 +4,7 @@ import {
   Node
 } from "latex-utensils/out/types/src/latex/latex_parser_types";
 import { stringify } from "./stringify";
-import commandTransformers from "./transform/command";
+import commandTransformers, { unsupported } from "./transform/command";
 
 export const regularizeText = (s: string) =>
   s
@@ -123,7 +123,9 @@ export const transformNode = (
       return `<ol>${children}</ol>`;
     }
     if (s.name === "figure") {
-      return `<p style="text-align:center;">[여기에 그림 입력]</p>`;
+      return `<p style="text-align:center;">${unsupported(
+        "[여기에 그림 입력]"
+      )}</p>`;
     }
     if (s.name === "example") {
       return "(입출력 예제)";
@@ -149,7 +151,7 @@ export const transformNode = (
   if (s.kind === "softbreak") return "<br/>";
   if (s.kind === "linebreak") return "<br/>";
   if (s.kind === "text.string") return regularizeText(s.content);
-  return JSON.stringify(s);
+  return unsupported(JSON.stringify(s));
 };
 
 export const transform = (s: AstRoot, args: TransformerArgs) => {

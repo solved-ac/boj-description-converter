@@ -4,6 +4,9 @@ import { TransformerArgs, transformNode } from "../parse";
 
 type Transformer = (s: Command, args: TransformerArgs) => string;
 
+export const unsupported = (s: string) =>
+  `<span style="color:#f00;background:#ff0;">${s}</span>`;
+
 export const transformSimpleArg = (
   arg: lp.Group | lp.OptionalArg,
   args: TransformerArgs
@@ -39,6 +42,7 @@ const newpage: Transformer = () => "";
 const _: Transformer = () => "_";
 const quad: Transformer = () => "&nbsp;&nbsp;&nbsp;";
 const qquad: Transformer = () => "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+const includegraphics: Transformer = () => unsupported("[여기에 그림 입력]");
 
 const commandTransformers = {
   InputFile,
@@ -57,6 +61,7 @@ const commandTransformers = {
   _,
   quad,
   qquad,
+  includegraphics,
 };
 
 export default commandTransformers;
