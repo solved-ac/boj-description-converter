@@ -59,6 +59,7 @@ const RenderedDescription = styled.div`
 const Converter: React.FC = () => {
   const [latex, setLatex] = useState<string>(exampleDescription);
   const [html, setHtml] = useState<boolean>(false);
+  const [jax, setJax] = useState<boolean>(true);
 
   const toParse = latex || exampleDescription;
   const parsed = parse(toParse);
@@ -66,10 +67,10 @@ const Converter: React.FC = () => {
     typeof parsed === "string"
       ? parsed
       : transform(parsed, {
-          renderMath: false,
+          renderMath: !jax,
         });
 
-  console.log(parsed);
+  //   console.log(parsed);
   return (
     <ConverterContainer>
       <ConverterSection>
@@ -89,9 +90,14 @@ const Converter: React.FC = () => {
             Result
           </Typo>
           {html ? "HTML 보는 중" : "미리보기 중"}
+          {jax ? " (수식 렌더: MathJax)" : " (수식 렌더: HTML)"}
           <Space w={8} />
           <Button onClick={() => setHtml((p) => !p)}>
             {html ? "미리보기로 전환" : "HTML로 전환"}
+          </Button>
+          <Space w={8} />
+          <Button onClick={() => setJax((p) => !p)}>
+            {jax ? "나는 MathJax가 싫어요" : "나는 MathJax가 좋아요"}
           </Button>
         </div>
         <div
