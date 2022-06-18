@@ -113,6 +113,9 @@ export const transformNode = (
     if (s.name === "center") {
       return `<p style="text-align:center;">${children}</p>`;
     }
+    if (s.name === "quote") {
+      return `<blockquote>${children}</blockquote>`;
+    }
     if (s.name === "itemize") {
       return `<ul>${children}</ul>`;
     }
