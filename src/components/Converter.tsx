@@ -57,7 +57,7 @@ const RenderedDescription = styled.div`
 `;
 
 const Converter: React.FC = () => {
-  const [latex, setLatex] = useState<string>("");
+  const [latex, setLatex] = useState<string>(exampleDescription);
   const [html, setHtml] = useState<boolean>(false);
 
   const toParse = latex || exampleDescription;
