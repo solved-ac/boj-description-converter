@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { Button, Space, TextField, Typo } from "@solved-ac/ui-react";
+import { MathJax } from "better-react-mathjax";
 import React, { useState } from "react";
 import "../boj-unify.scss";
 import { parse, transform } from "../utils/parse";
@@ -117,10 +118,12 @@ const Converter: React.FC = () => {
                 overflowY: "auto",
               }}
             >
-              <RenderedDescription
-                className="preview"
-                dangerouslySetInnerHTML={{ __html: transformed }}
-              />
+              <MathJax>
+                <RenderedDescription
+                  className="preview"
+                  dangerouslySetInnerHTML={{ __html: transformed }}
+                />
+              </MathJax>
             </div>
           )}
         </div>
