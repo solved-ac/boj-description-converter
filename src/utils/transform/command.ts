@@ -11,13 +11,15 @@ export const transformSimpleArg = (
   return transformNode(arg.content, args);
 };
 
-const InputFile: Transformer = () => "<h2>입력</h2>";
-const OutputFile: Transformer = () => "<h2>출력</h2>";
-const Interaction: Transformer = () => "<h2>인터랙션</h2>";
-const Note: Transformer = () => "<h2>노트</h2>";
-const Notes: Transformer = () => "<h2>노트</h2>";
-const Constraints: Transformer = () => "<h2>제한</h2>";
-const Examples: Transformer = () => "<h2>입출력 예제</h2>";
+const delemiter = "\n\n\n\n";
+
+const InputFile: Transformer = () => `${delemiter}<h2>입력</h2>`;
+const OutputFile: Transformer = () => `${delemiter}<h2>출력</h2>`;
+const Interaction: Transformer = () => `${delemiter}<h2>인터랙션</h2>`;
+const Note: Transformer = () => `${delemiter}<h2>노트</h2>`;
+const Notes: Transformer = () => `${delemiter}<h2>노트</h2>`;
+const Constraints: Transformer = () => `${delemiter}<h2>제한</h2>`;
+const Examples: Transformer = () => `${delemiter}<h2>입출력 예제</h2>`;
 
 const t: Transformer = (s, args) =>
   `<span style="color:#e74c3c;"><code>${transformSimpleArg(
@@ -27,11 +29,16 @@ const t: Transformer = (s, args) =>
 const textbf: Transformer = (s, args) =>
   `<strong>${transformSimpleArg(s.args[0], args)}</strong>`;
 const textsf: Transformer = (s, args) => transformSimpleArg(s.args[0], args);
+const texttt: Transformer = (s, args) =>
+  `<code>${transformSimpleArg(s.args[0], args)}</code>`;
 const exmp: Transformer = (s, args) => {
   const res = s.args.map((a) => transformNode(a.content, args));
   return `<tr>${res.map((r) => `<td>${r}</td>`)}</tr>`;
 };
 const newpage: Transformer = () => "";
+const _: Transformer = () => "_";
+const quad: Transformer = () => "&nbsp;&nbsp;&nbsp;";
+const qquad: Transformer = () => "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
 const commandTransformers = {
   InputFile,
@@ -44,8 +51,12 @@ const commandTransformers = {
   t,
   textbf,
   textsf,
+  texttt,
   exmp,
   newpage,
+  _,
+  quad,
+  qquad,
 };
 
 export default commandTransformers;

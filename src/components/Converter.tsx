@@ -67,8 +67,7 @@ const Converter: React.FC = () => {
           renderMath: false,
         });
 
-  console.log(parsed);
-
+        console.log(parsed)
   return (
     <ConverterContainer>
       <ConverterSection>
@@ -93,9 +92,19 @@ const Converter: React.FC = () => {
             {html ? "미리보기로 전환" : "HTML로 전환"}
           </Button>
         </div>
-        <div style={{ flex: "1 0 0", overflowY: "auto" }}>
+        <div style={{ flex: "1 0 0" }}>
           {html ? (
-            <code>{transformed}</code>
+            <TextField
+              multiline
+              style={{
+                fontFamily: "monospace",
+                wordBreak: "break-all",
+                whiteSpace: "break-spaces",
+                width: "100%",
+                height: "100%",
+              }}
+              value={transformed}
+            />
           ) : (
             <RenderedDescription
               dangerouslySetInnerHTML={{ __html: transformed }}

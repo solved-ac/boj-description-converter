@@ -144,7 +144,8 @@ export const transformNode = (
   }
   if (s.kind === "space") return " ";
   if (s.kind === "softbreak") return "<br/>";
-  if (s.kind === "text.string") return escapeHtml(regularizeText(s.content));
+  if (s.kind === "linebreak") return "<br/>";
+  if (s.kind === "text.string") return regularizeText(s.content);
   return JSON.stringify(s);
 };
 

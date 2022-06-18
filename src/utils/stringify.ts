@@ -178,7 +178,9 @@ export function stringify(
     return (
       "\\left" +
       node.left +
+      " " +
       stringifyArray(node.content, options) +
+      " " +
       "\\right" +
       node.right
     );
