@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.js": "/boj-description-converter/static/js/main.9e8ddfd8.js",
+    "static/js/787.8c44f734.chunk.js": "/boj-description-converter/static/js/787.8c44f734.chunk.js",
+    "index.html": "/boj-description-converter/index.html",
+    "main.9e8ddfd8.js.map": "/boj-description-converter/static/js/main.9e8ddfd8.js.map",
+    "787.8c44f734.chunk.js.map": "/boj-description-converter/static/js/787.8c44f734.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.9e8ddfd8.js"
+  ]
+}
