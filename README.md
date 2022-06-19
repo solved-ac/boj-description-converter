@@ -13,7 +13,7 @@ For contests on BOJ with printed problemset, it is often challenging to:
   * ``` `` ... '' ``` &rarr; `&ldquo; ... &rdquo;` (double quotes)
   * `\textit{...}` &rarr; `<em>...</em>` (italic text)
   * `\textbf{...}` &rarr; `<strong>...</strong>` (bold text)
-  * `\begin{centering}...\end{centering}` &rarr; `<p style="text-align:center;"><code>...</code></span>` (centered text)
+  * `\begin{center}...\end{center}` &rarr; `<p style="text-align:center;"><code>...</code></span>` (centered text)
   * `\t{...}` &rarr; `<span style="color:#e74c3c;"><code>...</code></span>` (colored verbatim)
   * `\begin{itemize} \item ... \end{itemize}` &rarr; `<ul> <li>...</li> </ul>` (unordered list)
 
