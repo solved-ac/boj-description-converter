@@ -6,6 +6,8 @@ import {
 import { TransformerArgs } from "./helpers";
 import { stringify } from "./stringify";
 import commonCommandTransformers from "./transform/command";
+import textEnvTransformers from "./transform/environment";
+import transformMathAlign from "./transform/kinds/mathAlign";
 import mathCommandTransformers, {
   mathCommandOperators
 } from "./transform/mathCommand";
@@ -162,6 +164,7 @@ export const transformMathNode = (
 };
 
 const paragraphEnvs = ["center", "figure"];
+const paragraphKinds = ["env.math.align"];
 const paragraphBreakCommands = [
   "InputFile",
   "OutputFile",
@@ -176,6 +179,7 @@ export const transformNodeArray = (
   s: Node[],
   args: TransformerArgs
 ): string => {
+  const { renderMath } = args;
   let ret = "";
 
   const len = s.length;
@@ -191,12 +195,28 @@ export const transformNodeArray = (
         continue;
       }
     }
+    if (cur.kind === "env.math.align") {
+      if (open.get("parbreak")) ret += "</p>";
+      if (!renderMath) {
+        ret += transformNode(
+          { kind: "displayMath", content: [cur], location: cur.location },
+          { ...args, italicMath: true }
+        );
+      } else {
+        ret += '<p style="text-align:center;">';
+        ret += transformMathAlign(cur, { ...args, italicMath: true });
+        ret += "</p>";
+      }
+      open.set("parbreak", false);
+      continue;
+    }
     if (lp.isParbreak(cur)) {
       if (i + 1 < len) {
         const nxt = s[i + 1];
         if (
           (lp.isEnvironment(nxt) && paragraphEnvs.includes(nxt.name)) ||
-          (lp.isCommand(nxt) && paragraphBreakCommands.includes(nxt.name))
+          (lp.isCommand(nxt) && paragraphBreakCommands.includes(nxt.name)) ||
+          paragraphKinds.includes(cur.kind)
         ) {
           if (open.get("parbreak")) ret += "</p>";
           open.set("parbreak", false);
@@ -220,7 +240,14 @@ export const transformNodeArray = (
       }
       if (cur.name === "item") {
         if (open.get("item")) ret += "</li>";
-        ret += `<li>`;
+        if (cur.args.length) {
+          ret += `<li style="list-style:none;">${transformNode(
+            cur.args[0].content,
+            args
+          )}`;
+        } else {
+          ret += `<li>`;
+        }
         open.set("item", true);
         continue;
       }
@@ -244,28 +271,12 @@ export const transformNode = (
     return transformNodeArray(s.content, args);
   }
   if (s.kind === "env") {
-    const children = transformNodeArray(s.content, args);
-    if (s.name === "center") {
-      return `<p style="text-align:center;">${children}</p>`;
-    }
-    if (s.name === "quote") {
-      return `<blockquote>${children}</blockquote>`;
-    }
-    if (s.name === "itemize") {
-      return `<ul>${children}</ul>`;
-    }
-    if (s.name === "enumerate") {
-      return `<ol>${children}</ol>`;
-    }
-    if (s.name === "figure") {
-      return `<p style="text-align:center;">${unsupported(
-        "[여기에 그림 입력]"
-      )}</p>`;
-    }
-    if (s.name === "example") {
-      return "(입출력 예제)";
-    }
-    return children;
+    if (Object.keys(textEnvTransformers).includes(s.name))
+      return textEnvTransformers[s.name as keyof typeof textEnvTransformers](
+        s,
+        args
+      );
+    return transformNodeArray(s.content, args);
   }
   if (s.kind === "command") {
     if (Object.keys(commonCommandTransformers).includes(s.name))
@@ -290,8 +301,7 @@ export const transformNode = (
     })}</div>`;
   }
   if (s.kind === "space") return " ";
-  if (s.kind === "softbreak") return "<br/>";
-  if (s.kind === "linebreak") return "<br/>";
+  if (s.kind === "softbreak" || s.kind === "linebreak") return "<br/>";
   if (s.kind === "text.string") return regularizeText(s.content);
   return unsupported(JSON.stringify(s));
 };

@@ -47,9 +47,18 @@ const matchingDelimiter: NodeTransformer = (s, args) => {
   return `${l}${transformMathNode(s.content, args)}${r}`;
 };
 
+const linebreak: NodeTransformer = (s, args) => {
+  return "<br/>";
+};
+
 const text: NodeTransformer = (s, args) => {
   if (s.kind !== "command.text") return "";
   return transformNode(s.arg, args);
+};
+
+const alignmentTab: NodeTransformer = (s, args) => {
+  if (s.kind !== "alignmentTab") return "";
+  return "";
 };
 
 const mathKindTransformers = {
@@ -59,6 +68,8 @@ const mathKindTransformers = {
   "math.math_delimiters": delimiter,
   "math.matching_delimiters": matchingDelimiter,
   "command.text": text,
+  alignmentTab,
+  linebreak,
 };
 
 export default mathKindTransformers;
