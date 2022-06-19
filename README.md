@@ -1,46 +1,48 @@
-# Getting Started with Create React App
+# boj-description-converter
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[solved-ac.github.io/boj-description-converter](https://solved-ac.github.io/boj-description-converter/)
 
-## Available Scripts
+Convert [UCPC](https://github.com/ucpcc/ucpc2020-description-layout)-flavored [olymp.sty](https://github.com/GassaFM/olymp.sty) based TeX problem statements to HTML, complying with [BOJ Stack](https://stack.acmicpc.net/guide/problem) and [UCPC](https://github.com/ucpcc/problemsetting-guidelines) formatting guidelines.
 
-In the project directory, you can run:
+## Why?
 
-### `npm start`
+For contests on BOJ with printed problemset, it is often challenging to:
+* Keep TeX and HTML descriptions synced - especially when multiple problemsetters are working on multiple problems
+* Convert one format to another - although BOJ supports MathJax, it is such a tedious and easily mistakable job to translate TeX markups to HTML. Few examples include:
+  * `\alpha` &rarr; `&alpha;` (greek letter 'alpha')
+  * ``` `` ... '' ``` &rarr; `&ldquo; ... &rdquo;` (double quotes)
+  * `\textit{...}` &rarr; `<em>...</em>` (italic text)
+  * `\textbf{...}` &rarr; `<strong>...</strong>` (bold text)
+  * `\begin{centering}...\end{centering}` &rarr; `<p style="text-align:center;"><code>...</code></span>` (centered text)
+  * `\t{...}` &rarr; `<span style="color:#e74c3c;"><code>...</code></span>` (colored verbatim)
+  * `\begin{itemize} \item ... \end{itemize}` &rarr; `<ul> <li>...</li> </ul>` (unordered list)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This project aims to eliminate manual converting work by problemsetters, and make problemsetters to just focus on setting great problems.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Usage
 
-### `npm test`
+1. Copy-paste [olymp.sty](https://github.com/GassaFM/olymp.sty) based TeX problem statement into the left input area.
+1. Preview the render output and fix the statement if needed.
+1. Copy-paste generated HTML to BOJ Stack.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 'I hate MathJax' Mode
 
-### `npm run build`
+This tool offers the ability to try rendering the equations in pure HTML while avoiding MathJax as much as possible. Currently supports the following:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* Superscripts and subscripts
+* Most of the TeX math symbol rendering commands, i. e. `\le`, `\delta`, `\rightarrow`
+* Italic texts on variables
+* Spacing around operators and functions like `ln` or `sin`
+* Fractions
+* `\sum`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Contributing
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Contributions are welcome!
 
-### `npm run eject`
+## TODO
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+* Cleanup code
+* `tabular` environment
+* Converting `\color` names to hex string
+* 
