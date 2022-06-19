@@ -162,6 +162,15 @@ export const transformMathNode = (
 };
 
 const paragraphEnvs = ["center", "figure"];
+const paragraphBreakCommands = [
+  "InputFile",
+  "OutputFile",
+  "Interaction",
+  "Note",
+  "Notes",
+  "Constraints",
+  "Examples",
+];
 
 export const transformNodeArray = (
   s: Node[],
@@ -185,7 +194,10 @@ export const transformNodeArray = (
     if (lp.isParbreak(cur)) {
       if (i + 1 < len) {
         const nxt = s[i + 1];
-        if (lp.isEnvironment(nxt) && paragraphEnvs.includes(nxt.name)) {
+        if (
+          (lp.isEnvironment(nxt) && paragraphEnvs.includes(nxt.name)) ||
+          (lp.isCommand(nxt) && paragraphBreakCommands.includes(nxt.name))
+        ) {
           if (open.get("parbreak")) ret += "</p>";
           open.set("parbreak", false);
           continue;
