@@ -13,6 +13,7 @@ export type NodeTransformer = (s: Node, args: TransformerArgs) => string;
 export interface TransformerArgs {
   renderMath?: boolean;
   italicMath?: boolean;
+  verbatim?: boolean;
 }
 
 export const transformSimpleArg = (

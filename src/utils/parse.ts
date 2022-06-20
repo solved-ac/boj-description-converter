@@ -19,6 +19,7 @@ export const regularizeText = (s: string) =>
     .replace(/``/g, "&ldquo;")
     .replace(/''/g, "&rdquo;")
     .replace(/"/g, "&rdquo;")
+    .replace(/&quot;/g, "&rdquo;")
     .replace(/`/g, "&lsquo;")
     .replace(/'/g, "&rsquo;");
 
@@ -302,7 +303,7 @@ export const transformNode = (
   }
   if (s.kind === "space") return " ";
   if (s.kind === "softbreak" || s.kind === "linebreak") return "<br/>";
-  if (s.kind === "text.string") return regularizeText(s.content);
+  if (s.kind === "text.string") return regularizeText(escapeHtml(s.content));
   return unsupported(JSON.stringify(s));
 };
 

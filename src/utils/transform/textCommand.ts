@@ -12,9 +12,17 @@ const includegraphics: CommandTransformer = (s, args) => {
   );
 };
 
+const textmd: CommandTransformer = (s, args) => {
+  return `<span style="font-weight:normal;">${transformNodeArray(
+    s.args,
+    args
+  )}</span>`;
+};
+
 const textCommandTransformers = {
   ...olympTransformers,
   textbf: h`strong`,
+  textmd,
   textsf: h`span`,
   textrm: h`span`,
   texttt: h`code`,

@@ -5,7 +5,7 @@ const commonCommandTransformers = {
   " ": s` `,
   "{": s`{`,
   "}": s`}`,
-  "&": s`&`,
+  "&": s`&amp;`,
   "@": s`@`,
   "%": s`%`,
   ",": s`&thinsp;`,
