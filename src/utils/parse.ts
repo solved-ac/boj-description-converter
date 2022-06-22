@@ -225,8 +225,12 @@ export const transformNodeArray = (
         }
       }
       if (open.get("parbreak")) ret += "</p>";
-      ret += `<p>`;
-      open.set("parbreak", true);
+      if (i + 1 < len) {
+        ret += `<p>`;
+        open.set("parbreak", true);
+      } else {
+        open.set("parbreak", false);
+      }
       continue;
     }
     if (lp.isCommand(cur)) {
@@ -254,6 +258,11 @@ export const transformNodeArray = (
       }
     }
     ret += transformNode(cur, args);
+    if (lp.isCommand(cur) && paragraphBreakCommands.includes(cur.name)) {
+      if (open.get("parbreak") || i + 1 >= len) continue;
+      ret += `<p>`;
+      open.set("parbreak", true);
+    }
   }
   if (open.get("color")) ret += "</span>";
   if (open.get("item")) ret += "</li>";
