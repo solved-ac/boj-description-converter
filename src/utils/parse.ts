@@ -164,7 +164,7 @@ export const transformMathNode = (
   return unsupported(JSON.stringify(s));
 };
 
-const paragraphEnvs = ["center", "figure"];
+const paragraphEnvs = ["center", "figure", "itemize", "enumerate"];
 const paragraphKinds = ["env.math.align"];
 const paragraphBreakCommands = [
   "InputFile",
