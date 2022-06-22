@@ -48,7 +48,7 @@ const matchingDelimiter: NodeTransformer = (s, args) => {
 };
 
 const linebreak: NodeTransformer = (s, args) => {
-  return "<br/>";
+  return "<br>";
 };
 
 const text: NodeTransformer = (s, args) => {

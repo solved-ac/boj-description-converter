@@ -311,7 +311,7 @@ export const transformNode = (
     })}</div>`;
   }
   if (s.kind === "space") return " ";
-  if (s.kind === "softbreak" || s.kind === "linebreak") return "<br/>";
+  if (s.kind === "softbreak" || s.kind === "linebreak") return "<br>";
   if (s.kind === "text.string") return regularizeText(escapeHtml(s.content));
   return unsupported(JSON.stringify(s));
 };
