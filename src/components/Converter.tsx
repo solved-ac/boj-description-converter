@@ -1,5 +1,13 @@
+import { ThemeProvider } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Button, Card, Space, TextField, Typo } from "@solved-ac/ui-react";
+import {
+  Button,
+  Card,
+  solvedThemes,
+  Space,
+  TextField,
+  Typo
+} from "@solved-ac/ui-react";
 import { MathJax } from "better-react-mathjax";
 import React, { useState } from "react";
 import "../boj-unify.scss";
@@ -123,17 +131,19 @@ const Converter: React.FC = () => {
                 <React.Fragment key={t.title}>
                   <Typo variant="h3">{t.title}</Typo>
                   {html ? (
-                    <Card
-                      contentEditable
-                      style={{
-                        width: "100%",
-                        fontFamily: "monospace",
-                        wordBreak: "break-all",
-                        whiteSpace: "break-spaces",
-                      }}
-                    >
-                      {t.body}
-                    </Card>
+                    <ThemeProvider theme={solvedThemes.dark}>
+                      <Card
+                        contentEditable
+                        style={{
+                          width: "100%",
+                          fontFamily: "monospace",
+                          wordBreak: "break-all",
+                          whiteSpace: "break-spaces",
+                        }}
+                      >
+                        {t.body}
+                      </Card>
+                    </ThemeProvider>
                   ) : (
                     <div
                       style={{
