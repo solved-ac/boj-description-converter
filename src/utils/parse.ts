@@ -17,7 +17,7 @@ import commandTransformers, { unsupported } from "./transform/textCommand";
 export const regularizeText = (s: string) =>
   s
     .replace(/``/g, "&ldquo;")
-    .replace(/''/g, "&rdquo;")
+    .replace(/&#039;&#039;/g, "&rdquo;")
     .replace(/"/g, "&rdquo;")
     .replace(/&quot;/g, "&rdquo;")
     .replace(/`/g, "&lsquo;")
@@ -164,7 +164,7 @@ export const transformMathNode = (
   return unsupported(JSON.stringify(s));
 };
 
-const paragraphEnvs = ["center", "figure", "itemize", "enumerate"];
+const paragraphEnvs = ["center", "figure", "itemize", "enumerate", "quote"];
 const paragraphKinds = ["env.math.align"];
 const paragraphBreakCommands = [
   "InputFile",
