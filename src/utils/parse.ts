@@ -166,7 +166,7 @@ export const transformMathNode = (
 
 const paragraphEnvs = ["center", "figure", "itemize", "enumerate", "quote"];
 const paragraphKinds = ["env.math.align"];
-const paragraphBreakCommands = [
+const sectionBreakCommands = [
   "InputFile",
   "OutputFile",
   "Interaction",
@@ -180,8 +180,11 @@ export const transformNodeArray = (
   s: Node[],
   args: TransformerArgs
 ): string => {
-  const { renderMath } = args;
+  const { renderMath, allowParbreaks } = args;
+  const subArgs = { ...args, allowParbreaks: false };
   let ret = "";
+  let paragraph = "",
+    section = "";
 
   const len = s.length;
   const open = new Map<string, boolean>();
@@ -190,25 +193,29 @@ export const transformNodeArray = (
     const cur = s[i];
     if (lp.isEnvironment(cur)) {
       if (paragraphEnvs.includes(cur.name)) {
-        if (open.get("parbreak")) ret += "</p>";
-        ret += transformNode(cur, args);
-        open.set("parbreak", false);
+        if (paragraph) {
+          section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+          paragraph = "";
+        }
+        section += transformNode(cur, subArgs);
         continue;
       }
     }
     if (cur.kind === "env.math.align") {
-      if (open.get("parbreak")) ret += "</p>";
+      if (paragraph) {
+        section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+        paragraph = "";
+      }
       if (!renderMath) {
         ret += transformNode(
           { kind: "displayMath", content: [cur], location: cur.location },
-          { ...args, italicMath: true }
+          { ...subArgs, italicMath: true }
         );
       } else {
-        ret += '<p style="text-align:center;">';
-        ret += transformMathAlign(cur, { ...args, italicMath: true });
-        ret += "</p>";
+        section += '<p style="text-align:center;">';
+        section += transformMathAlign(cur, { ...subArgs, italicMath: true });
+        section += "</p>";
       }
-      open.set("parbreak", false);
       continue;
     }
     if (lp.isParbreak(cur)) {
@@ -216,20 +223,19 @@ export const transformNodeArray = (
         const nxt = s[i + 1];
         if (
           (lp.isEnvironment(nxt) && paragraphEnvs.includes(nxt.name)) ||
-          (lp.isCommand(nxt) && paragraphBreakCommands.includes(nxt.name)) ||
+          (lp.isCommand(nxt) && sectionBreakCommands.includes(nxt.name)) ||
           paragraphKinds.includes(cur.kind)
         ) {
-          if (open.get("parbreak")) ret += "</p>";
-          open.set("parbreak", false);
+          if (paragraph) {
+            section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+            paragraph = "";
+          }
           continue;
         }
       }
-      if (open.get("parbreak")) ret += "</p>";
-      if (i + 1 < len) {
-        ret += `<p>`;
-        open.set("parbreak", true);
-      } else {
-        open.set("parbreak", false);
+      if (paragraph) {
+        section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+        paragraph = "";
       }
       continue;
     }
@@ -238,35 +244,31 @@ export const transformNodeArray = (
         if (open.get("color")) ret += "</span>";
         ret += `<span style="color: ${transformNode(
           cur.args[0].content,
-          args
+          subArgs
         )}">`;
         open.set("color", true);
         continue;
       }
-      if (cur.name === "item") {
-        if (open.get("item")) ret += "</li>";
-        if (cur.args.length) {
-          ret += `<li style="list-style:none;">${transformNode(
-            cur.args[0].content,
-            args
-          )}`;
-        } else {
-          ret += `<li>`;
-        }
-        open.set("item", true);
-        continue;
+    }
+    if (lp.isCommand(cur) && sectionBreakCommands.includes(cur.name)) {
+      if (paragraph) {
+        section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+        paragraph = "";
       }
+      ret += section;
+      section = "";
+      ret += transformNode(cur, subArgs);
+      continue;
     }
-    ret += transformNode(cur, args);
-    if (lp.isCommand(cur) && paragraphBreakCommands.includes(cur.name)) {
-      if (open.get("parbreak") || i + 1 >= len) continue;
-      ret += `<p>`;
-      open.set("parbreak", true);
-    }
+    paragraph += transformNode(cur, subArgs);
   }
+  if (paragraph) {
+    section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+    paragraph = "";
+  }
+  ret += section;
+  section = "";
   if (open.get("color")) ret += "</span>";
-  if (open.get("item")) ret += "</li>";
-  if (open.get("parbreak")) ret += "</p>";
   return ret;
 };
 

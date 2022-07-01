@@ -16,9 +16,20 @@ const input: CommandTransformer = (s, args) =>
     s.args[0],
     args
   )}</code></span>`;
+
+const regularExmp = (s: string) => {
+  return s
+    .split("<br>")
+    .map((x) => x.trim())
+    .filter((x) => x)
+    .join("\n");
+};
+
 const exmp: CommandTransformer = (s, args) => {
   const res = s.args.map((a) => transformNode(a.content, args));
-  return `<tr>${res.map((r) => `<td>${r}</td>`)}</tr>`;
+  return `<tr>${res
+    .map((r) => `<td><pre class="sampledata">${regularExmp(r)}</pre></td>`)
+    .join("")}</tr>`;
 };
 
 const olympTransformers = {

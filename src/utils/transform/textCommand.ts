@@ -19,6 +19,13 @@ const textmd: CommandTransformer = (s, args) => {
   )}</span>`;
 };
 
+const caption: CommandTransformer = (s, args) => {
+  return `<figcaption style="text-align:center;">그림 A.0: ${transformNodeArray(
+    s.args,
+    args
+  )}</figcaption>`;
+};
+
 const textCommandTransformers = {
   ...olympTransformers,
   textbf: h`strong`,
@@ -31,6 +38,7 @@ const textCommandTransformers = {
   textsuperscript: h`sup`,
   textsubscript: h`sub`,
   includegraphics,
+  caption,
 };
 
 export default textCommandTransformers;

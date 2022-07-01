@@ -14,6 +14,7 @@ export interface TransformerArgs {
   renderMath?: boolean;
   italicMath?: boolean;
   verbatim?: boolean;
+  allowParbreaks?: boolean;
 }
 
 export const transformSimpleArg = (
