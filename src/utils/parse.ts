@@ -1,6 +1,7 @@
 import { latexParser as lp } from "latex-utensils";
 import {
   AstRoot,
+  Environment,
   Node
 } from "latex-utensils/out/types/src/latex/latex_parser_types";
 import { TransformerArgs } from "./helpers";
@@ -166,15 +167,6 @@ export const transformMathNode = (
 
 const paragraphEnvs = ["center", "figure", "itemize", "enumerate", "quote"];
 const paragraphKinds = ["env.math.align"];
-const sectionBreakCommands = [
-  "InputFile",
-  "OutputFile",
-  "Interaction",
-  "Note",
-  "Notes",
-  "Constraints",
-  "Examples",
-];
 
 export const transformNodeArray = (
   s: Node[],
@@ -183,8 +175,7 @@ export const transformNodeArray = (
   const { renderMath, allowParbreaks } = args;
   const subArgs = { ...args, allowParbreaks: false };
   let ret = "";
-  let paragraph = "",
-    section = "";
+  let paragraph = "";
 
   const len = s.length;
   const open = new Map<string, boolean>();
@@ -194,16 +185,16 @@ export const transformNodeArray = (
     if (lp.isEnvironment(cur)) {
       if (paragraphEnvs.includes(cur.name)) {
         if (paragraph) {
-          section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+          ret += allowParbreaks ? `<p>${paragraph}</p>\n\n` : paragraph;
           paragraph = "";
         }
-        section += transformNode(cur, subArgs);
+        ret += transformNode(cur, subArgs);
         continue;
       }
     }
     if (cur.kind === "env.math.align") {
       if (paragraph) {
-        section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+        ret += allowParbreaks ? `<p>${paragraph}</p>\n\n` : paragraph;
         paragraph = "";
       }
       if (!renderMath) {
@@ -212,9 +203,9 @@ export const transformNodeArray = (
           { ...subArgs, italicMath: true }
         );
       } else {
-        section += '<p style="text-align:center;">';
-        section += transformMathAlign(cur, { ...subArgs, italicMath: true });
-        section += "</p>";
+        ret += '<p style="text-align:center;">';
+        ret += transformMathAlign(cur, { ...subArgs, italicMath: true });
+        ret += "</p>\n\n";
       }
       continue;
     }
@@ -223,18 +214,17 @@ export const transformNodeArray = (
         const nxt = s[i + 1];
         if (
           (lp.isEnvironment(nxt) && paragraphEnvs.includes(nxt.name)) ||
-          (lp.isCommand(nxt) && sectionBreakCommands.includes(nxt.name)) ||
           paragraphKinds.includes(cur.kind)
         ) {
           if (paragraph) {
-            section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+            ret += allowParbreaks ? `<p>${paragraph}</p>\n\n` : paragraph;
             paragraph = "";
           }
           continue;
         }
       }
       if (paragraph) {
-        section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+        ret += allowParbreaks ? `<p>${paragraph}</p>\n\n` : paragraph;
         paragraph = "";
       }
       continue;
@@ -250,24 +240,12 @@ export const transformNodeArray = (
         continue;
       }
     }
-    if (lp.isCommand(cur) && sectionBreakCommands.includes(cur.name)) {
-      if (paragraph) {
-        section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
-        paragraph = "";
-      }
-      ret += section;
-      section = "";
-      ret += transformNode(cur, subArgs);
-      continue;
-    }
     paragraph += transformNode(cur, subArgs);
   }
   if (paragraph) {
-    section += allowParbreaks ? `<p>${paragraph}</p>` : paragraph;
+    ret += allowParbreaks ? `<p>${paragraph}</p>\n\n` : paragraph;
     paragraph = "";
   }
-  ret += section;
-  section = "";
   if (open.get("color")) ret += "</span>";
   return ret;
 };
@@ -321,6 +299,67 @@ export const transformNode = (
 export const transform = (s: AstRoot, args: TransformerArgs) => {
   try {
     return transformNodeArray(s.content, args);
+  } catch (e) {
+    return (e as any).toString();
+  }
+};
+
+const sectionBreakCommands = [
+  "InputFile",
+  "OutputFile",
+  "Interaction",
+  "Note",
+  "Notes",
+  "Constraints",
+  "Examples",
+];
+
+export const transformProblem = (
+  s: Node[],
+  args: TransformerArgs
+): { title: string; body: string }[] => {
+  const ret: { title: string; body: string }[] = [];
+
+  const len = s.length;
+  let section = "Statement";
+  let stack: Node[] = [];
+
+  for (let i = 0; i < len; i++) {
+    const cur = s[i];
+    if (lp.isCommand(cur) && sectionBreakCommands.includes(cur.name)) {
+      ret.push({ title: section, body: transformNodeArray(stack, args) });
+      stack = [];
+      section = cur.name;
+    } else {
+      stack.push(cur);
+    }
+  }
+  if (stack) {
+    const item = transformNodeArray(stack, args);
+    if (item)
+      ret.push({ title: section, body: transformNodeArray(stack, args) });
+    stack = [];
+  }
+  return ret;
+};
+
+export const findFirstProblemEnv = (
+  node: Node | Node[]
+): Environment | null => {
+  if (Array.isArray(node)) {
+    return (node.find((x) => findFirstProblemEnv(x)) as Environment) || null;
+  }
+  if (lp.isEnvironment(node) && node.name === "problem") return node;
+  return null;
+};
+
+export const transformProblemEnv = (
+  s: Environment,
+  args: TransformerArgs
+): string | { title: string; body: string }[] => {
+  if (!s) return "No problem env found.";
+  try {
+    return transformProblem(s.content, { ...args, allowParbreaks: true });
   } catch (e) {
     return (e as any).toString();
   }

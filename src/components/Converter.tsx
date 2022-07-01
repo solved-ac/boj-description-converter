@@ -1,9 +1,13 @@
 import styled from "@emotion/styled";
-import { Button, Space, TextField, Typo } from "@solved-ac/ui-react";
+import { Button, Card, Space, TextField, Typo } from "@solved-ac/ui-react";
 import { MathJax } from "better-react-mathjax";
 import React, { useState } from "react";
 import "../boj-unify.scss";
-import { parse, transform } from "../utils/parse";
+import {
+  findFirstProblemEnv,
+  parse,
+  transformProblemEnv
+} from "../utils/parse";
 import { exampleDescription } from "./example";
 
 const ConverterContainer = styled.div`
@@ -63,14 +67,17 @@ const Converter: React.FC = () => {
 
   const toParse = latex || exampleDescription;
   const parsed = parse(toParse);
-  const transformed =
-    typeof parsed === "string"
-      ? parsed
-      : transform(parsed, {
-          renderMath: !jax,
-        });
 
-  //   console.log(parsed);
+  const problemEnv =
+    (typeof parsed !== "string" && findFirstProblemEnv(parsed.content)) || null;
+  const transformed =
+    (problemEnv &&
+      transformProblemEnv(problemEnv, {
+        renderMath: !jax,
+      })) ||
+    [];
+
+  console.log(parsed);
   return (
     <ConverterContainer>
       <ConverterSection>
@@ -101,37 +108,49 @@ const Converter: React.FC = () => {
           </Button>
         </div>
         <div
-          style={{ flex: "1 0 0", display: "flex", flexDirection: "column" }}
+          style={{
+            flex: "1 0 0",
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            height: "100%",
+            overflowY: "auto",
+          }}
         >
-          {html ? (
-            <TextField
-              multiline
-              style={{
-                fontFamily: "monospace",
-                wordBreak: "break-all",
-                whiteSpace: "break-spaces",
-                width: "100%",
-                height: "100%",
-              }}
-              value={transformed}
-            />
-          ) : (
-            <div
-              style={{
-                flex: "1 0 0",
-                width: "100%",
-                height: "100%",
-                overflowY: "auto",
-              }}
-            >
-              <MathJax>
-                <RenderedDescription
-                  className="preview"
-                  dangerouslySetInnerHTML={{ __html: transformed }}
-                />
-              </MathJax>
-            </div>
-          )}
+          {typeof transformed === "string"
+            ? transformed
+            : transformed.map((t) => (
+                <React.Fragment key={t.title}>
+                  <Typo variant="h3">{t.title}</Typo>
+                  {html ? (
+                    <Card
+                      contentEditable
+                      style={{
+                        width: "100%",
+                        fontFamily: "monospace",
+                        wordBreak: "break-all",
+                        whiteSpace: "break-spaces",
+                      }}
+                    >
+                      {t.body}
+                    </Card>
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        flex: "1 0 0",
+                      }}
+                    >
+                      <MathJax>
+                        <RenderedDescription
+                          className="preview"
+                          dangerouslySetInnerHTML={{ __html: t.body }}
+                        />
+                      </MathJax>
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
         </div>
       </ConverterSection>
     </ConverterContainer>
