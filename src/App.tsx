@@ -14,8 +14,18 @@ const App: React.FC = () => {
   return (
     <AppContainer>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-        <header style={{ flex: "2 0 0", minWidth: 480 }}>
-          <Typo variant="h1">BOJ 디스크립션 툴</Typo>
+        <header
+          style={{
+            flex: "2 0 0",
+            minWidth: 480,
+            display: "flex",
+            alignItems: "center",
+            gap: "1ch",
+          }}
+        >
+          <Typo h1 no-margin>
+            BOJ Stack 디스크립션 툴
+          </Typo>
           by <a href="https://solved.ac">solved.ac</a>
         </header>
       </div>

@@ -69,6 +69,18 @@ const RenderedDescription = styled.div`
   }
 `;
 
+const titleBojStackName = (s: string) => {
+  if (s === "Statement") return "문제";
+  if (s === "InputFile") return "입력";
+  if (s === "OutputFile") return "출력";
+  if (s === "Interaction") return "인터랙션";
+  if (s === "Note") return "노트";
+  if (s === "Notes") return "노트";
+  if (s === "Constraints") return "제한";
+  if (s === "Examples") return "예제";
+  return s;
+};
+
 const Converter: React.FC = () => {
   const [latex, setLatex] = useState<string>(exampleDescription);
   const [html, setHtml] = useState<boolean>(false);
@@ -158,7 +170,7 @@ const Converter: React.FC = () => {
           ) : (
             transformed.map((t) => (
               <React.Fragment key={t.title}>
-                <Typo variant="h3">{t.title}</Typo>
+                <Typo variant="h3">{titleBojStackName(t.title)}</Typo>
                 {html ? (
                   <ThemeProvider theme={solvedThemes.dark}>
                     <Card
