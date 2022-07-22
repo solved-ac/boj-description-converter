@@ -307,7 +307,7 @@ const commonCommandTransformers = {
   ast: s`∗`,
   vysmwhtcircle: s`∘`,
   vysmblkcircle: s`∙`,
-  sqrt: s`√`,
+  // sqrt: s`√`,
   surd: s`√`,
   cuberoot: s`∛`,
   fourthroot: s`∜`,

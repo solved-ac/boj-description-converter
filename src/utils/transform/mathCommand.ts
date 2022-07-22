@@ -468,6 +468,10 @@ const mathrm: CommandTransformer = (s, args) => {
   });
 };
 
+const sqrt: CommandTransformer = (s, args) => {
+  return `√<span style="text-decoration:overline;"> ${transformMathNode(s.args[0], args)}</span>`;
+};
+
 const mathCommandTransformers = {
   displaystyle: s``,
   mathsf,
@@ -523,6 +527,7 @@ const mathCommandTransformers = {
   inf: s`inf`,
   max: s`max`,
   sup: s`sup`,
+  sqrt,
 };
 
 export default mathCommandTransformers;
