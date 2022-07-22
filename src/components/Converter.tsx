@@ -14,6 +14,7 @@ import "../boj-unify.scss";
 import {
   findFirstProblemEnv,
   parse,
+  transformNode,
   transformProblemEnv
 } from "../utils/parse";
 import { exampleDescription } from "./example";
@@ -83,6 +84,10 @@ const Converter: React.FC = () => {
       transformProblemEnv(problemEnv, {
         renderMath: !jax,
       })) ||
+    (typeof parsed !== "string" &&
+      transformNode(parsed.content, {
+        renderMath: !jax,
+      })) ||
     [];
 
   console.log(parsed);
@@ -125,42 +130,67 @@ const Converter: React.FC = () => {
             overflowY: "auto",
           }}
         >
-          {typeof transformed === "string"
-            ? transformed
-            : transformed.map((t) => (
-                <React.Fragment key={t.title}>
-                  <Typo variant="h3">{t.title}</Typo>
-                  {html ? (
-                    <ThemeProvider theme={solvedThemes.dark}>
-                      <Card
-                        contentEditable
-                        style={{
-                          width: "100%",
-                          fontFamily: "monospace",
-                          wordBreak: "break-all",
-                          whiteSpace: "break-spaces",
-                        }}
-                      >
-                        {t.body}
-                      </Card>
-                    </ThemeProvider>
-                  ) : (
-                    <div
+          {typeof transformed === "string" ? (
+            <>
+              {html ? (
+                <ThemeProvider theme={solvedThemes.dark}>
+                  <Card
+                    contentEditable
+                    style={{
+                      width: "100%",
+                      fontFamily: "monospace",
+                      wordBreak: "break-all",
+                      whiteSpace: "break-spaces",
+                    }}
+                  >
+                    {transformed}
+                  </Card>
+                </ThemeProvider>
+              ) : (
+                <MathJax>
+                  <RenderedDescription
+                    className="preview"
+                    dangerouslySetInnerHTML={{ __html: transformed }}
+                  />
+                </MathJax>
+              )}
+            </>
+          ) : (
+            transformed.map((t) => (
+              <React.Fragment key={t.title}>
+                <Typo variant="h3">{t.title}</Typo>
+                {html ? (
+                  <ThemeProvider theme={solvedThemes.dark}>
+                    <Card
+                      contentEditable
                       style={{
                         width: "100%",
-                        flex: "1 0 0",
+                        fontFamily: "monospace",
+                        wordBreak: "break-all",
+                        whiteSpace: "break-spaces",
                       }}
                     >
-                      <MathJax>
-                        <RenderedDescription
-                          className="preview"
-                          dangerouslySetInnerHTML={{ __html: t.body }}
-                        />
-                      </MathJax>
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
+                      {t.body}
+                    </Card>
+                  </ThemeProvider>
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      flex: "1 0 0",
+                    }}
+                  >
+                    <MathJax>
+                      <RenderedDescription
+                        className="preview"
+                        dangerouslySetInnerHTML={{ __html: t.body }}
+                      />
+                    </MathJax>
+                  </div>
+                )}
+              </React.Fragment>
+            ))
+          )}
         </div>
       </ConverterSection>
     </ConverterContainer>
