@@ -51,9 +51,47 @@ export const isMathOperator = (s: Node) => {
   return false;
 };
 
+const bigOperators = [
+  "sum",
+  "prod",
+  "lim",
+  "liminf",
+  "limsup",
+  "projlim",
+  "injlim",
+  "plim",
+  "inf",
+  "sup",
+  "max",
+  "argmax",
+  "min",
+  "argmin",
+  "gcd",
+  "det",
+  "bigcap",
+  "bigcup",
+  "bigodot",
+  "bigoplus",
+  "bigotimes",
+  "bigsqcup",
+  "biguplus",
+  "bigvee",
+  "bigwedge",
+  "int",
+  "coprod",
+  "oint",
+  "iint",
+  "iiint",
+  "iiiint",
+  "idotsint",
+  "oiint",
+  "varoint",
+  "varint",
+];
+
 export const isMathBigOperator = (s: Node) => {
   if (s.kind === "command") {
-    return s.name === "sum";
+    return bigOperators.includes(s.name);
   }
   return false;
 };

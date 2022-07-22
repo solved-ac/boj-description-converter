@@ -180,6 +180,7 @@ const commonCommandTransformers = {
   leftarrow: s`←`,
   uparrow: s`↑`,
   rightarrow: s`→`,
+  to: s`→`,
   downarrow: s`↓`,
   leftrightarrow: s`↔`,
   updownarrow: s`↕`,
