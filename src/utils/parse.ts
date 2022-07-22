@@ -19,6 +19,7 @@ export const regularizeText = (s: string) =>
   s
     .replace(/``/g, "&ldquo;")
     .replace(/&#039;&#039;/g, "&rdquo;")
+    .replace(/&#039;/g, "&rsquo;")
     .replace(/"/g, "&rdquo;")
     .replace(/&quot;/g, "&rdquo;")
     .replace(/`/g, "&lsquo;")

@@ -20,10 +20,9 @@ const textmd: CommandTransformer = (s, args) => {
 };
 
 const caption: CommandTransformer = (s, args) => {
-  return `<figcaption style="text-align:center;">그림 A.0: ${transformNodeArray(
-    s.args,
-    args
-  )}</figcaption>`;
+  return `<figcaption style="text-align:center;">그림 ${unsupported(
+    "A.0"
+  )}: ${transformNodeArray(s.args, args)}</figcaption>`;
 };
 
 const textCommandTransformers = {
