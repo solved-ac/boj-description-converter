@@ -469,7 +469,11 @@ const mathrm: CommandTransformer = (s, args) => {
 };
 
 const sqrt: CommandTransformer = (s, args) => {
-  return `√<span style="text-decoration:overline;"> ${transformMathNode(s.args[0], args)}</span>`;
+  if (!s.args.length) return "√";
+  return `√<span style="text-decoration:overline;"> ${transformMathNode(
+    s.args[0],
+    args
+  )}</span>`;
 };
 
 const mathCommandTransformers = {
