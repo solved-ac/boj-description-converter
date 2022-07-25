@@ -1,4 +1,4 @@
-import { parseLatexDimens, toCssDimens } from "../dimens";
+import { groupToCssDimens } from "../dimens";
 import { CommandTransformer, h } from "../helpers";
 import { transformNodeArray } from "../parse";
 import olympTransformers from "./commands/olymp";
@@ -29,24 +29,18 @@ const caption: CommandTransformer = (s, args) => {
 const vspace: CommandTransformer = (s, args) => {
   if (s.args.length !== 1) return "";
   if (s.args[0].kind !== "arg.group") return "";
-  if (s.args[0].content.length !== 1) return "";
-  if (s.args[0].content[0].kind !== "text.string") return "";
 
-  const unit = s.args[0].content[0].content;
-  return `<span style="display:block;height:${toCssDimens(
-    parseLatexDimens(unit)
+  return `<span style="display:block;height:${groupToCssDimens(
+    s.args[0]
   )}"></span>`;
 };
 
 const hspace: CommandTransformer = (s, args) => {
   if (s.args.length !== 1) return "";
   if (s.args[0].kind !== "arg.group") return "";
-  if (s.args[0].content.length !== 1) return "";
-  if (s.args[0].content[0].kind !== "text.string") return "";
 
-  const unit = s.args[0].content[0].content;
-  return `<span style="display:inline-block;width:${toCssDimens(
-    parseLatexDimens(unit)
+  return `<span style="display:block;width:${groupToCssDimens(
+    s.args[0]
   )}"></span>`;
 };
 

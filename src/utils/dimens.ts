@@ -1,3 +1,5 @@
+import { Group } from "latex-utensils/out/types/src/latex/latex_parser";
+
 export type LatexUnit =
   | "pt"
   | "mm"
@@ -39,7 +41,6 @@ export const toCssDimens = (
   } = { strict: true, screen: true, round: true }
 ): string => {
   const { strict, screen, round } = args;
-  console.log(v, unit);
 
   // TeX-specific: bp, dd, cc, nd, nc, sp
   if (unit === "bp") return toCssDimens([v / 72, "in"], args);
@@ -78,4 +79,16 @@ export const toCssDimens = (
   if (unit === "\\parskip") return `${v}em`;
 
   return "0";
+};
+
+export const groupToCssDimens = (widthArg: Group) => {
+  const dimen = widthArg.content
+    .map((c) => {
+      if (c.kind === "command") return `\\${c.name}`;
+      if (c.kind === "text.string") return c.content;
+      return "";
+    })
+    .join("");
+
+  return toCssDimens(parseLatexDimens(dimen));
 };

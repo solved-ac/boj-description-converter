@@ -1,3 +1,4 @@
+import { groupToCssDimens } from "../dimens";
 import { EnvTransformer } from "../helpers";
 import { transformNodeArray } from "../parse";
 import { transformListChildren } from "./envs/list";
@@ -51,6 +52,19 @@ const example: EnvTransformer = (s, args) =>
 const figure: EnvTransformer = (s, args) =>
   `<figure style="text-align:center;">${children(s, args)}</figure>`;
 
+const minipage: EnvTransformer = (s, args) => {
+  const widthArg = s.args.find((a) => a.kind === "arg.group");
+  if (!widthArg || widthArg.kind !== "arg.group")
+    return `<span style="display:inline-block;">${children(s, args)}</span>`;
+
+  const width = groupToCssDimens(widthArg);
+
+  return `<span style="display:inline-block;width:${width};">${children(
+    s,
+    args
+  )}</span>`;
+};
+
 const textEnvTransformers = {
   problem,
   center,
@@ -59,6 +73,7 @@ const textEnvTransformers = {
   enumerate,
   example,
   figure,
+  minipage,
 };
 
 export default textEnvTransformers;
