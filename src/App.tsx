@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import styled from "@emotion/styled";
 import { Typo } from "@solved-ac/ui-react";
 import React from "react";
@@ -9,6 +10,9 @@ const AppContainer = styled.div`
   height: 100%;
   padding: 32px;
 `;
+
+const js =
+  "var o=CKEDITOR.filter.instances;Object.keys(o).forEach((k)=>o[k].disable())";
 
 const App: React.FC = () => {
   return (
@@ -31,11 +35,15 @@ const App: React.FC = () => {
       </div>
       <ul>
         <li>
-          DOM 엘리먼트로 복사하려면 Stack에서 다음을 실행하세요: <br />
-          <code>
-            var
-            o=CKEDITOR.filter.instances;Object.keys(o).forEach((k)=&gt;o[k].disable())
-          </code>
+          <b>중요:</b> DOM 엘리먼트로 복사하려면 Stack에서 다음을 실행하세요.
+          링크를 드래그해 북마크바에 끌어다 놓으면 북마크를 클릭하는 것만으로도
+          가능합니다.
+          <br />
+          <Typo small>
+            <a href={`javascript:${js}`}>
+              <code>{js}</code>
+            </a>
+          </Typo>
         </li>
       </ul>
       <Converter />
