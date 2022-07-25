@@ -379,6 +379,7 @@ export const transformProblem = (
       ret.push({ title: section, body: transformNodeArray(stack, args) });
     stack = [];
   }
+
   return ret;
 };
 
@@ -392,13 +393,43 @@ export const findFirstProblemEnv = (
   return null;
 };
 
+export interface ProblemMeta {
+  title?: string;
+  input?: string;
+  output?: string;
+  timeLimit?: string;
+  memoryLimit?: string;
+}
+
 export const transformProblemEnv = (
   s: Environment,
   args: TransformerArgs
-): string | { title: string; body: string }[] => {
+):
+  | string
+  | {
+      meta: ProblemMeta;
+      content: { title: string; body: string }[];
+    } => {
   if (!s) return "No problem env found.";
   try {
-    return transformProblem(s.content, { ...args, allowParbreaks: true });
+    const meta: ProblemMeta = {};
+    const problemArgs = s.args;
+
+    if (problemArgs.length >= 1)
+      meta.title = transformNode(problemArgs[0].content, args);
+    if (problemArgs.length >= 2)
+      meta.input = transformNode(problemArgs[1].content, args);
+    if (problemArgs.length >= 3)
+      meta.output = transformNode(problemArgs[2].content, args);
+    if (problemArgs.length >= 4)
+      meta.timeLimit = transformNode(problemArgs[3].content, args);
+    if (problemArgs.length >= 5)
+      meta.memoryLimit = transformNode(problemArgs[4].content, args);
+
+    return {
+      meta,
+      content: transformProblem(s.content, { ...args, allowParbreaks: true }),
+    };
   } catch (e) {
     return (e as any).toString();
   }

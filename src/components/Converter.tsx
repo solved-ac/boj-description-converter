@@ -91,16 +91,14 @@ const Converter: React.FC = () => {
 
   const problemEnv =
     (typeof parsed !== "string" && findFirstProblemEnv(parsed.content)) || null;
-  const transformed =
-    (problemEnv &&
-      transformProblemEnv(problemEnv, {
-        renderMath: !jax,
-      })) ||
+  const transformed = (problemEnv &&
+    transformProblemEnv(problemEnv, {
+      renderMath: !jax,
+    })) ||
     (typeof parsed !== "string" &&
       transformNode(parsed.content, {
         renderMath: !jax,
-      })) ||
-    [];
+      })) || { meta: {}, content: [] };
 
   console.log(parsed);
   return (
@@ -168,40 +166,93 @@ const Converter: React.FC = () => {
               )}
             </>
           ) : (
-            transformed.map((t) => (
-              <React.Fragment key={t.title}>
-                <Typo variant="h3">{titleBojStackName(t.title)}</Typo>
-                {html ? (
-                  <ThemeProvider theme={solvedThemes.dark}>
-                    <Card
-                      contentEditable
+            <>
+              {transformed.meta.title && (
+                <Typo
+                  variant="h2"
+                  dangerouslySetInnerHTML={{ __html: transformed.meta.title }}
+                />
+              )}
+              <Typo
+                variant="description"
+                style={{ display: "flex", gap: 16, flexWrap: "wrap" }}
+              >
+                {transformed.meta.input && (
+                  <span>
+                    <b>입력</b>{" "}
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: `${transformed.meta.input}`,
+                      }}
+                    />
+                  </span>
+                )}
+                {transformed.meta.output && (
+                  <span>
+                    <b>출력</b>{" "}
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: `${transformed.meta.output}`,
+                      }}
+                    />
+                  </span>
+                )}
+                {transformed.meta.timeLimit && (
+                  <span>
+                    <b>시간 제한</b>{" "}
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: `${transformed.meta.timeLimit}`,
+                      }}
+                    />
+                  </span>
+                )}
+                {transformed.meta.memoryLimit && (
+                  <span>
+                    <b>메모리 제한</b>{" "}
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: `${transformed.meta.memoryLimit}`,
+                      }}
+                    />
+                  </span>
+                )}
+              </Typo>
+              {transformed.content.map((t) => (
+                <React.Fragment key={t.title}>
+                  <Typo variant="h3">{titleBojStackName(t.title)}</Typo>
+                  {html ? (
+                    <ThemeProvider theme={solvedThemes.dark}>
+                      <Card
+                        contentEditable
+                        style={{
+                          width: "100%",
+                          fontFamily: "monospace",
+                          wordBreak: "break-all",
+                          whiteSpace: "break-spaces",
+                        }}
+                      >
+                        {t.body}
+                      </Card>
+                    </ThemeProvider>
+                  ) : (
+                    <div
                       style={{
                         width: "100%",
-                        fontFamily: "monospace",
-                        wordBreak: "break-all",
-                        whiteSpace: "break-spaces",
+                        flex: "1 0 0",
                       }}
                     >
-                      {t.body}
-                    </Card>
-                  </ThemeProvider>
-                ) : (
-                  <div
-                    style={{
-                      width: "100%",
-                      flex: "1 0 0",
-                    }}
-                  >
-                    <MathJax>
-                      <RenderedDescription
-                        className="preview"
-                        dangerouslySetInnerHTML={{ __html: t.body }}
-                      />
-                    </MathJax>
-                  </div>
-                )}
-              </React.Fragment>
-            ))
+                      <MathJax>
+                        <RenderedDescription
+                          className="preview"
+                          dangerouslySetInnerHTML={{ __html: t.body }}
+                        />
+                      </MathJax>
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
+            </>
           )}
         </div>
       </ConverterSection>
