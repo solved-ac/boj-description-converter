@@ -39,7 +39,7 @@ const hspace: CommandTransformer = (s, args) => {
   if (s.args.length !== 1) return "";
   if (s.args[0].kind !== "arg.group") return "";
 
-  return `<span style="display:block;width:${groupToCssDimens(
+  return `<span style="display:inline-block;width:${groupToCssDimens(
     s.args[0]
   )}"></span>`;
 };
