@@ -1,14 +1,9 @@
-import { ThemeProvider } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
-  Button,
-  Card,
-  solvedThemes,
-  Space,
+  Button, Space,
   TextField,
   Typo
 } from "@solved-ac/ui-react";
-import { MathJax } from "better-react-mathjax";
 import React, { useState } from "react";
 import "../boj-unify.scss";
 import {
@@ -17,6 +12,7 @@ import {
   transformNode,
   transformProblemEnv
 } from "../utils/parse";
+import DescriptionRenderer from "./DescriptionRenderer";
 import { exampleDescription } from "./example";
 
 const ConverterContainer = styled.div`
@@ -30,43 +26,6 @@ const ConverterSection = styled.div`
   flex: 1 0 0;
   display: flex;
   flex-direction: column;
-`;
-
-const RenderedDescription = styled.div`
-  p {
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-  }
-  h2 {
-    display: block;
-    font-size: 1.5em;
-    margin-block-start: 0.83em;
-    margin-block-end: 0.83em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    font-weight: bold;
-  }
-  ul {
-    display: block;
-    list-style-type: disc;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    padding-inline-start: 40px;
-  }
-  ol {
-    display: block;
-    list-style-type: decimal;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    padding-inline-start: 40px;
-  }
 `;
 
 const titleBojStackName = (s: string) => {
@@ -141,30 +100,7 @@ const Converter: React.FC = () => {
           }}
         >
           {typeof transformed === "string" ? (
-            <>
-              {html ? (
-                <ThemeProvider theme={solvedThemes.dark}>
-                  <Card
-                    contentEditable
-                    style={{
-                      width: "100%",
-                      fontFamily: "monospace",
-                      wordBreak: "break-all",
-                      whiteSpace: "break-spaces",
-                    }}
-                  >
-                    {transformed}
-                  </Card>
-                </ThemeProvider>
-              ) : (
-                <MathJax>
-                  <RenderedDescription
-                    className="preview"
-                    dangerouslySetInnerHTML={{ __html: transformed }}
-                  />
-                </MathJax>
-              )}
-            </>
+            <DescriptionRenderer html={html} content={transformed} />
           ) : (
             <>
               {transformed.meta.title && (
@@ -221,35 +157,7 @@ const Converter: React.FC = () => {
               {transformed.content.map((t) => (
                 <React.Fragment key={t.title}>
                   <Typo variant="h3">{titleBojStackName(t.title)}</Typo>
-                  {html ? (
-                    <ThemeProvider theme={solvedThemes.dark}>
-                      <Card
-                        contentEditable
-                        style={{
-                          width: "100%",
-                          fontFamily: "monospace",
-                          wordBreak: "break-all",
-                          whiteSpace: "break-spaces",
-                        }}
-                      >
-                        {t.body}
-                      </Card>
-                    </ThemeProvider>
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        flex: "1 0 0",
-                      }}
-                    >
-                      <MathJax>
-                        <RenderedDescription
-                          className="preview"
-                          dangerouslySetInnerHTML={{ __html: t.body }}
-                        />
-                      </MathJax>
-                    </div>
-                  )}
+                  <DescriptionRenderer html={html} content={t.body} />
                 </React.Fragment>
               ))}
             </>
@@ -261,3 +169,5 @@ const Converter: React.FC = () => {
 };
 
 export default Converter;
+
+// CKEDITOR.config.copyFormatting_allowRules = '*'
