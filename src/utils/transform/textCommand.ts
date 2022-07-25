@@ -1,5 +1,5 @@
 import { groupToCssDimens } from "../dimens";
-import { CommandTransformer, h } from "../helpers";
+import { CommandTransformer, h, s } from "../helpers";
 import { transformNodeArray } from "../parse";
 import olympTransformers from "./commands/olymp";
 
@@ -55,6 +55,7 @@ const textCommandTransformers = {
   underline: h`u`,
   textsuperscript: h`sup`,
   textsubscript: h`sub`,
+  centering: s``,
   includegraphics,
   caption,
   vspace,
