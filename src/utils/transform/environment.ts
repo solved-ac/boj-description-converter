@@ -55,11 +55,11 @@ const figure: EnvTransformer = (s, args) =>
 const minipage: EnvTransformer = (s, args) => {
   const widthArg = s.args.find((a) => a.kind === "arg.group");
   if (!widthArg || widthArg.kind !== "arg.group")
-    return `<span style="display:inline-block;">${children(s, args)}</span>`;
+    return `<span style="display:inline-block;text-align:initial;">${children(s, args)}</span>`;
 
   const width = groupToCssDimens(widthArg);
 
-  return `<span style="display:inline-block;width:${width};">${children(
+  return `<span style="display:inline-block;text-align:initial;width:${width};">${children(
     s,
     args
   )}</span>`;

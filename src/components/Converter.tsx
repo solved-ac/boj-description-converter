@@ -1,9 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  Button, Space,
-  TextField,
-  Typo
-} from "@solved-ac/ui-react";
+import { Button, TextField, Typo } from "@solved-ac/ui-react";
 import React, { useState } from "react";
 import "../boj-unify.scss";
 import {
@@ -13,7 +9,7 @@ import {
   transformProblemEnv
 } from "../utils/parse";
 import DescriptionRenderer from "./DescriptionRenderer";
-import { exampleDescription } from "./example";
+import { physed, raspberries, sungshiftdang } from "./example";
 
 const ConverterContainer = styled.div`
   flex: 1 0 0;
@@ -41,11 +37,11 @@ const titleBojStackName = (s: string) => {
 };
 
 const Converter: React.FC = () => {
-  const [latex, setLatex] = useState<string>(exampleDescription);
+  const [latex, setLatex] = useState<string>(sungshiftdang);
   const [html, setHtml] = useState<boolean>(false);
   const [jax, setJax] = useState<boolean>(true);
 
-  const toParse = latex || exampleDescription;
+  const toParse = latex || sungshiftdang;
   const parsed = parse(toParse);
 
   const problemEnv =
@@ -63,7 +59,36 @@ const Converter: React.FC = () => {
   return (
     <ConverterContainer>
       <ConverterSection>
-        <Typo variant="h2">LaTeX</Typo>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Typo variant="h2" style={{ flex: "1 0 0" }}>
+            LaTeX
+          </Typo>
+          예시:
+          <Button
+            onClick={() => setLatex(sungshiftdang)}
+            style={{ lineHeight: 1.2 }}
+          >
+            성싶당
+            <Typo description small as="div">
+              #20941
+            </Typo>
+          </Button>
+          <Button onClick={() => setLatex(physed)} style={{ lineHeight: 1.2 }}>
+            체육과목
+            <Typo description small as="div">
+              #25314
+            </Typo>
+          </Button>
+          <Button
+            onClick={() => setLatex(raspberries)}
+            style={{ lineHeight: 1.2 }}
+          >
+            라즈베리
+            <Typo description small as="div">
+              #25386
+            </Typo>
+          </Button>
+        </div>
         <TextField<"textarea">
           multiline
           value={latex}
@@ -74,19 +99,15 @@ const Converter: React.FC = () => {
         />
       </ConverterSection>
       <ConverterSection>
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Typo variant="h2" style={{ flex: "1 0 0" }}>
             Result
           </Typo>
-          {html ? "HTML 보는 중" : "미리보기 중"}
-          {jax ? " (수식 렌더: MathJax)" : " (수식 렌더: HTML)"}
-          <Space w={8} />
           <Button onClick={() => setHtml((p) => !p)}>
-            {html ? "미리보기로 전환" : "HTML로 전환"}
+            {html ? "소스 코드" : "DOM"}
           </Button>
-          <Space w={8} />
           <Button onClick={() => setJax((p) => !p)}>
-            {jax ? "나는 MathJax가 싫어요" : "나는 MathJax가 좋아요"}
+            {jax ? "MathJax 수식" : "HTML 수식"}
           </Button>
         </div>
         <div
