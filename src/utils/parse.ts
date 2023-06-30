@@ -329,8 +329,8 @@ export const transformNode = (
       italicMath: true,
     })}</div>`;
   }
-  if (s.kind === "space") return " ";
-  if (s.kind === "softbreak" || s.kind === "linebreak") return "<br>";
+  if (s.kind === "space" || s.kind === "softbreak") return " ";
+  if (s.kind === "linebreak") return "<br>";
   if (s.kind === "text.string") return regularizeText(escapeHtml(s.content));
   return unsupported(JSON.stringify(s));
 };
