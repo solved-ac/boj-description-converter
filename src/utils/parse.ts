@@ -318,6 +318,26 @@ export const transformNode = (
         args
       );
   }
+  if (s.kind === "command.href" || s.kind === "command.url") {
+    if (s.kind === "command.href")
+      return `<a href="${s.url}">${transformNodeArray(s.content, args)}</a>`;
+    if (s.kind === "command.url")
+      return `<a href="${s.url}">${s.url}</a>`;
+  }
+  if (s.kind === "env.lstlisting") {
+    return `<pre><code>${escapeHtml(s.content)}</code></pre>`;
+  }
+  if (s.kind === "subscript" || s.kind === "superscript") {
+    /**
+     * for Text Escape
+     * 
+     * Subscript and superscript in the formula are processed in `transformMathNode()`.
+     * This processing corresponds to situations where things should be treated as plain text,
+     * but are processed as subscripts and superscripts in formulas.
+     */
+    if (s.kind === "subscript") return "_";
+    if (s.kind === "superscript") return "^";
+  }
   if (s.kind === "inlineMath") {
     if (!renderMath) return escapeHtml(stringify(s).trim());
     return transformMathNode(s.content, { ...args, italicMath: true });

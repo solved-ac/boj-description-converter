@@ -2,6 +2,7 @@ import { groupToCssDimens } from "../dimens";
 import { CommandTransformer, h, s } from "../helpers";
 import { transformNodeArray } from "../parse";
 import olympTransformers from "./commands/olymp";
+import textsizeCommandTransformers from "./commands/textsize";
 
 export const unsupported = (s: string) =>
   `<span style="color:#f00;background:#ff0;">${s}</span>`;
@@ -45,18 +46,28 @@ const hspace: CommandTransformer = (s, args) => {
 };
 
 const textCommandTransformers = {
+  // The order has referred to this page: https://polygon.codeforces.com/docs/statements-tex-manual
   ...olympTransformers,
+  bf: h`strong`,
   textbf: h`strong`,
+  it: h`em`,
+  textit: h`em`,
+  /* t: defined at `commands/olymp.ts` */
+  tt: h`code`,
+  texttt: h`code`,
+  emph: h`u`,
+  underline: h`u`,
+  sout: h`del`,
+  textsc: h`del`,
+  ...textsizeCommandTransformers,
+  includegraphics,
+  epigraph: h`blockquote`,
   textmd,
   textsf: h`span`,
   textrm: h`span`,
-  texttt: h`code`,
-  textit: h`em`,
-  underline: h`u`,
   textsuperscript: h`sup`,
   textsubscript: h`sub`,
   centering: s``,
-  includegraphics,
   caption,
   vspace,
   hspace,
